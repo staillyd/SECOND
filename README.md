@@ -242,17 +242,12 @@ You can download pretrained models in [google drive](https://drive.google.com/op
 
 Note that this pretrained model is trained before a bug of sparse convolution fixed, so the eval result may slightly worse. 
 
-## Docker (Deprecated. I can't push docker due to network problem.)
-
-You can use a prebuilt docker for testing:
-```
-docker pull scrin/second-pytorch 
-```
-Then run:
-```
-nvidia-docker run -it --rm -v /media/yy/960evo/datasets/:/root/data -v $HOME/pretrained_models:/root/model --ipc=host second-pytorch:latest
-python ./pytorch/train.py evaluate --config_path=./configs/car.config --model_dir=/root/model/car
-```
+## Docker Modified
+1. build from dockerfile.
+2. [git clone spconv](https://github.com/traveller59/spconv)
+3. [upgrade cmake](https://www.jianshu.com/p/47354d42d571)
+4. add second.pytorch/ to PYTHONPATH
+5. pip 安装Kitti Viewer Web所缺的库
 
 ## Try Kitti Viewer Web
 
