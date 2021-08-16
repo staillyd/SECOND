@@ -221,7 +221,7 @@ class SimpleVoxel(nn.Module):
         # features: [concated_num_points, num_voxel_size, 3(4)]
         # num_voxels: [concated_num_points]
         points_mean = features[:, :, :self.num_input_features].sum(
-            dim=1, keepdim=False) / num_voxels.type_as(features).view(-1, 1)
+            dim=1, keepdim=False) / num_voxels.type_as(features).view(-1, 1)# 对每个网格里最多num_voxel_size个点在xyzi各维度求均值
         return points_mean.contiguous()
 
 @register_vfe
@@ -244,12 +244,12 @@ class SimpleVoxelRadius(nn.Module):
         self.name = name
 
     def forward(self, features, num_voxels, coors):
-        # features: [concated_num_points, num_voxel_size, 3(4)]
-        # num_voxels: [concated_num_points]
+        # features: [concated_num_points, num_voxel_size, 3(4)]   num_voxel_size:体素网格最大数
+        # num_voxels: [concated_num_points]  多少个体素网格
         points_mean = features[:, :, :self.num_input_features].sum(
-            dim=1, keepdim=False) / num_voxels.type_as(features).view(-1, 1)
+            dim=1, keepdim=False) / num_voxels.type_as(features).view(-1, 1)# 对每个网格里最多num_voxel_size个点在xyzi各维度求均值
         feature = torch.norm(points_mean[:, :2], p=2, dim=1, keepdim=True)
         # z is important for z position regression, but x, y is not.
         res = torch.cat([feature, points_mean[:, 2:self.num_input_features]],
-                        dim=1)
+                        dim=1)# xy归一化 然后与原始z拼接
         return res
