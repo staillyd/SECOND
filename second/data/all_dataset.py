@@ -22,6 +22,7 @@ def create_groundtruth_database(dataset_class_name,
                                 lidar_only=False,
                                 bev_only=False,
                                 coors_range=None):
+    '''创建真值数据库，真值的意思是数据只包含特殊类别的点云，只有车，人，等等物体的base info和label info，用于kiiti数据的数据增'''
     dataset = get_dataset_class(dataset_class_name)(
         info_path=info_path,
         root_path=data_path,

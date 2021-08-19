@@ -163,6 +163,7 @@ def get_kitti_image_info(path,
                          with_imageshape=True):
     # image_infos = []
     """ 
+    获取点云和图像的路径等信息
     KITTI annotation format version 2:
     {
         [optional]points: [N, 3+] point cloud

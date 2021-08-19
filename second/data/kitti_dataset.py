@@ -199,7 +199,7 @@ class KittiDataset(Dataset):
             velo_path.parent.stem + '_reduced') / velo_path.name
         if velo_reduced_path.exists():
             velo_path = velo_reduced_path
-        points = np.fromfile(
+        points = np.fromfile(# 没有用第二部分生成的点云，用的是全部的原始顶点云
             str(velo_path), dtype=np.float32,
             count=-1).reshape([-1, self.NumPointFeatures])
         res["lidar"]["points"] = points
@@ -233,7 +233,7 @@ class KittiDataset(Dataset):
             gt_boxes = np.concatenate([locs, dims, rots[..., np.newaxis]],
                                       axis=1).astype(np.float32)
             calib = info["calib"]
-            gt_boxes = box_np_ops.box_camera_to_lidar(
+            gt_boxes = box_np_ops.box_camera_to_lidar(#将真实标签转换到激光雷达坐标系(x,y,z,w,l,h,r)
                 gt_boxes, calib["R0_rect"], calib["Tr_velo_to_cam"])
 
             # only center format is allowed. so we need to convert
@@ -305,6 +305,7 @@ def _calculate_num_points_in_gt(data_path,
                                 relative_path,
                                 remove_outside=True,
                                 num_features=4):
+    '''根据雷达外参数把点云投在相机坐标系下，然后滤除相机视场外的点，计算剩下点云的个数，把结果更新到annos["num_points_in_gt"]中'''
     for info in infos:
         pc_info = info["point_cloud"]
         image_info = info["image"]
@@ -342,6 +343,7 @@ def _calculate_num_points_in_gt(data_path,
 
 
 def create_kitti_info_file(data_path, save_path=None, relative_path=True):
+    # 获取各个子集index
     imageset_folder = Path(__file__).resolve().parent / "ImageSets"
     train_img_ids = _read_imageset_file(str(imageset_folder / "train.txt"))
     val_img_ids = _read_imageset_file(str(imageset_folder / "val.txt"))
@@ -352,14 +354,14 @@ def create_kitti_info_file(data_path, save_path=None, relative_path=True):
         save_path = Path(data_path)
     else:
         save_path = Path(save_path)
-    kitti_infos_train = kitti.get_kitti_image_info(
+    kitti_infos_train = kitti.get_kitti_image_info(#获取点云和图像的路径等信息
         data_path,
         training=True,
         velodyne=True,
         calib=True,
         image_ids=train_img_ids,
-        relative_path=relative_path)
-    _calculate_num_points_in_gt(data_path, kitti_infos_train, relative_path)
+        relative_path=relative_path)#获取训练集中img、pc、annos、calib信息
+    _calculate_num_points_in_gt(data_path, kitti_infos_train, relative_path)#获取相机视场范围内LiDAR点云的个数
     filename = save_path / 'kitti_infos_train.pkl'
     print(f"Kitti info train file is saved to {filename}")
     with open(filename, 'wb') as f:
@@ -409,7 +411,7 @@ def _create_reduced_point_cloud(data_path,
         v_path = pc_info['velodyne_path']
         v_path = Path(data_path) / v_path
         points_v = np.fromfile(
-            str(v_path), dtype=np.float32, count=-1).reshape([-1, 4])
+            str(v_path), dtype=np.float32, count=-1).reshape([-1, 4])#点云原始数据
         rect = calib['R0_rect']
         P2 = calib['P2']
         Trv2c = calib['Tr_velo_to_cam']
@@ -420,7 +422,7 @@ def _create_reduced_point_cloud(data_path,
         if back:
             points_v[:, 0] = -points_v[:, 0]
         points_v = box_np_ops.remove_outside_points(points_v, rect, Trv2c, P2,
-                                                    image_info["image_shape"])
+                                                    image_info["image_shape"])#去除相机视场外的点,仍然在相机坐标系
         if save_path is None:
             save_filename = v_path.parent.parent / (
                 v_path.parent.stem + "_reduced") / v_path.name
@@ -441,6 +443,7 @@ def create_reduced_point_cloud(data_path,
                                test_info_path=None,
                                save_path=None,
                                with_back=False):
+    '''获取相机视场内的点云'''
     if train_info_path is None:
         train_info_path = Path(data_path) / 'kitti_infos_train.pkl'
     if val_info_path is None:
