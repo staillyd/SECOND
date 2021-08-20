@@ -69,7 +69,7 @@ class SimpleModelLog:
                     self.metrics.append(json.loads(line))
         log_file_path = model_dir / f'log.txt'
         self.log_mjson_file = open(log_mjson_file_path, 'a')
-        self.log_file = open(log_file_path, 'a')
+        self.log_file = open(log_file_path, 'a',encoding='utf-8')
         self.summary_writter = SummaryWriter(str(summary_dir))
         return self
 

@@ -139,7 +139,7 @@ Download KITTI dataset and create some directories first:
 
 Then run
 ```bash
-python create_data.py kitti_data_prep --data_path=KITTI_DATASET_ROOT
+python create_data.py kitti_data_prep --root_path=KITTI_DATASET_ROOT
 ```
 
 * [NuScenes](https://www.nuscenes.org) Dataset preparation
@@ -248,6 +248,7 @@ Note that this pretrained model is trained before a bug of sparse convolution fi
 3. [upgrade cmake](https://www.jianshu.com/p/47354d42d571)
 4. add second.pytorch/ to PYTHONPATH
 5. pip 安装Kitti Viewer Web所缺的库
+6. numpy==1.17.4
 
 ## Try Kitti Viewer Web
 

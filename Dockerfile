@@ -60,7 +60,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         setuptools \
         && \
     $PIP_INSTALL \
-        numpy \
+        numpy==1.17.4 \
         scipy \
         matplotlib \
         Cython \

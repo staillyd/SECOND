@@ -161,13 +161,13 @@ def train(config_path,
         # when you want to train with several different parameters in
         # one script.
         config = pipeline_pb2.TrainEvalPipelineConfig()
-        with open(config_path, "r") as f:
+        with open(config_path, "r",encoding="utf-8") as f:
             proto_str = f.read()
             text_format.Merge(proto_str, config)
     else:
         config = config_path
         proto_str = text_format.MessageToString(config, indent=2)
-    with (model_dir / config_file_bkp).open("w") as f:
+    with (model_dir / config_file_bkp).open("w",encoding="utf-8") as f:#备份
         f.write(proto_str)
 
     input_cfg = config.train_input_reader
@@ -455,7 +455,7 @@ def evaluate(config_path,
         # when you want to eval with several different parameters in
         # one script.
         config = pipeline_pb2.TrainEvalPipelineConfig()
-        with open(config_path, "r") as f:
+        with open(config_path, "r",encoding='utf-8') as f:
             proto_str = f.read()
             text_format.Merge(proto_str, config)
     else:

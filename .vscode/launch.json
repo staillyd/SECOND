@@ -1,0 +1,45 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "eval",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/second/pytorch/train.py",
+            "console": "integratedTerminal",
+            "args": [
+                "evaluate",
+                "--config_path=${workspaceFolder}/second/configs/all.fhd.config",
+                "--model_dir=${workspaceFolder}/trained_models/tmp/",
+                "--measure_time=True",
+                "--batch_size=1"
+            ]
+        },
+        {
+            "name": "Train",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/second/pytorch/train.py",
+            "console": "integratedTerminal",
+            "args": [
+                "train",
+                "--config_path=${workspaceFolder}/second/configs/all.fhd.config",
+                "--model_dir=${workspaceFolder}/trained_models/tmp/"
+            ]
+        },
+        {
+            "name": "Kitti Prep",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/second/create_data.py",
+            "console": "integratedTerminal",
+            "args": [
+                "kitti_data_prep",
+                "--root_path=/data/datasets/KITTI/"
+            ]
+        }
+    ]
+}
